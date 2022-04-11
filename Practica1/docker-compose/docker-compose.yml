@@ -2,7 +2,8 @@ version: '3'
 
 volumes:
   prometheus-data: {}
-  grafana-data: {}
+  grafana-data1: {}
+  grafana-data2: {}
 
 services:
   prometheus:
@@ -37,16 +38,28 @@ services:
       - 9100:9100
     restart: always
 
-  grafana:
-    container_name: node-grafana
-    image: grafana/grafana-oss
-    ports:
-      - 3000:3000
+  grafana1:
+    container_name: node1-grafana
+    image: grafana/grafana
+    expose:
+      - 3000
     depends_on:
       - prometheus
     volumes:
       - ./grafana/provisioning/:/etc/grafana/provisioning/
-      - grafana-data:/var/lib/grafana
+      - grafana-data1:/var/lib/grafana
+    restart: always
+
+  grafana2:
+    container_name: node2-grafana
+    image: grafana/grafana
+    expose:
+      - 3000
+    depends_on:
+      - prometheus
+    volumes:
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+      - grafana-data2:/var/lib/grafana
     restart: always
 
   haproxy:
@@ -60,4 +73,5 @@ services:
     ports:
       - 8080:80
     depends_on:
-      - grafana
+      - grafana1
+      - grafana2
