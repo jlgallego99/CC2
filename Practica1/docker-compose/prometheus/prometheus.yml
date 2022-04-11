@@ -1,6 +1,6 @@
 global:
-  scrape_interval: 30s
-  scrape_timeout: 15s
+  scrape_interval: 15s
+  scrape_timeout: 5s
 
 rule_files:
   - alert.yml
@@ -12,5 +12,4 @@ scrape_configs:
       - targets:
           - 'node1-exporter:9100'
           # - 'node2-exporter:9100'
-          - 'prometheus:9090'
-          - 'idonotexists:564'
+          - 'localhost:9090'

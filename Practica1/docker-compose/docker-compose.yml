@@ -49,15 +49,16 @@ services:
     depends_on:
       - prometheus
     volumes:
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
       - grafana-data:/var/lib/grafana
     restart: always
 
-  haproxy:
-    image: haproxy:latest
-    volumes:
-      - ./haproxy:/haproxy-override
-      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
-    links:
-      - grafana
-    ports:
-      - 8080:80
+  #haproxy:
+  #  image: haproxy:latest
+  #  volumes:
+  #    - ./haproxy:/haproxy-override
+  #    - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+  #  links:
+  #    - grafana
+  #  ports:
+  #    - 8080:80
