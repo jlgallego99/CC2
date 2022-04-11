@@ -1,6 +1,19 @@
 version: '3'
 
 services:
+  weba:
+    expose:
+      - 80
+
+  webb:
+    expose:
+      - 80
+
+  haproxy:
+    ports:
+      - "8080:80"
+      - "7000:70"
+
   prometheus:
     container_name: node-prom 
     image: prom/prometheus:latest
