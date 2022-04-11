@@ -1,5 +1,13 @@
 version: '3'
 
+volumes:
+  prometheus-data: {}
+  grafana-data: {}
+
+#networks:
+#  frontend:
+#  backend:
+
 services:
   prometheus:
     container_name: node-prom
@@ -9,7 +17,29 @@ services:
     volumes:
       - ./prometheus:/etc/prometheus
       - prometheus-data:/prometheus
-    command: --web.enable-lifecycle --config.file=/etc/prometheus/prometheus.yml --storage.tsdb.retention.time=7d
+    command: 
+      - '--web.enable-lifecycle'
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=7d'
+    restart: always
+
+  node-exporter:
+    container_name: node1-exporter
+    image: prom/node-exporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+    ports:
+      - 9100:9100
+    restart: always
 
   grafana:
     container_name: node-grafana
@@ -18,20 +48,16 @@ services:
       - 3000:3000
     depends_on:
       - prometheus
-
-  node-exporter:
-    container_name: node1-exporter
-    image: prom/node-exporter
-    ports:
-      - 9100:9100
+    volumes:
+      - grafana-data:/var/lib/grafana
+    restart: always
 
   haproxy:
-    image: haproxy:1.6
+    image: haproxy:latest
     volumes:
       - ./haproxy:/haproxy-override
       - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    links:
+      - grafana
     ports:
       - 8080:80
-
-volumes:
-  prometheus-data:
