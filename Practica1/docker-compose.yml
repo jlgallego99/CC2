@@ -72,9 +72,6 @@ services:
     volumes:
       - ./haproxy:/haproxy-override
       - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
-    links:
-      - grafana1
-      - grafana2
     ports:
       - 8080:80
     depends_on:
