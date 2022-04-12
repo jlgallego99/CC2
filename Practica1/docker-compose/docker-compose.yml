@@ -2,8 +2,7 @@ version: '3'
 
 volumes:
   prometheus-data: {}
-  grafana-data1: {}
-  grafana-data2: {}
+  grafana-data: {}
 
 services:
   prometheus:
@@ -23,7 +22,7 @@ services:
       - '--storage.tsdb.retention.time=7d'
     restart: always
 
-  node-exporter:
+  node-exporter1:
     container_name: node1-exporter
     image: prom/node-exporter
     volumes:
@@ -34,33 +33,38 @@ services:
       - '--path.procfs=/host/proc'
       - '--path.rootfs=/rootfs'
       - '--path.sysfs=/host/sys'
-    ports:
-      - 9100:9100
+    expose:
+      - 9100
     restart: always
 
-  grafana1:
-    container_name: node1-grafana
-    image: grafana/grafana
+  node-exporter2:
+    container_name: node2-exporter
+    image: prom/node-exporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+    expose:
+      - 9100
+    restart: always
+
+  grafana:
+    image: grafana/grafana-oss
     expose:
       - 3000
     depends_on:
       - prometheus
     volumes:
       - ./grafana/provisioning/:/etc/grafana/provisioning/
-      - grafana-data1:/var/lib/grafana
+      - grafana-data:/var/lib/grafana
     restart: always
-
-  grafana2:
-    container_name: node2-grafana
-    image: grafana/grafana
-    expose:
-      - 3000
-    depends_on:
-      - prometheus
-    volumes:
-      - ./grafana/provisioning/:/etc/grafana/provisioning/
-      - grafana-data2:/var/lib/grafana
-    restart: always
+    deploy:
+      mode: replicated
+      replicas: 2
 
   haproxy:
     container_name: node-haproxy
@@ -69,9 +73,9 @@ services:
       - ./haproxy:/haproxy-override
       - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
     links:
-      - grafana
+      - grafana1
+      - grafana2
     ports:
       - 8080:80
     depends_on:
-      - grafana1
-      - grafana2
+      - grafana

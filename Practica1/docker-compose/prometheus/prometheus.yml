@@ -11,5 +11,5 @@ scrape_configs:
     static_configs:
       - targets:
           - 'node1-exporter:9100'
-          # - 'node2-exporter:9100'
+          - 'node2-exporter:9100'
           - 'localhost:9090'
