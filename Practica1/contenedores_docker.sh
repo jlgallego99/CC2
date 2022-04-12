@@ -10,12 +10,14 @@ then
     docker stop node-prom
     docker stop node1-exporter
     docker stop node2-exporter
-    docker stop node-grafana
+    docker stop docker-compose-grafana-1
+    docker stop docker-compose-grafana-2
     docker stop node-haproxy
     docker rm node-prom
     docker rm node1-exporter
     docker rm node2-exporter
-    docker rm node-grafana
+    docker rm docker-compose-grafana-1
+    docker rm docker-compose-grafana-2
     docker rm node-haproxy
 elif [ $1 == "run" ]; 
 then
@@ -30,6 +32,7 @@ then
     docker run -it -d --name node-prom -v $(pwd)/prometheus:/etc/prometheus -v prometheus-data:/prometheus -p 9090:9090 --network cc_p1_network prom/prometheus:latest $PROM_COMMANDS
     docker run -it -d --name node1-exporter -v /proc:/host/proc:ro -v /sys:/host/sys:ro -v /:/rootfs:ro --expose 9100 --network cc_p1_network prom/node-exporter $EXPORTER_COMMANDS
     docker run -it -d --name node2-exporter -v /proc:/host/proc:ro -v /sys:/host/sys:ro -v /:/rootfs:ro --expose 9100 --network cc_p1_network prom/node-exporter $EXPORTER_COMMANDS
-    docker run -it -d --name node-grafana -v $(pwd)/grafana/provisioning/:/etc/grafana/provisioning/ -v grafana-data:/var/lib/grafana -p 3000:3000 --network cc_p1_network grafana/grafana-oss
+    docker run -it -d --name docker-compose-grafana-1 -v $(pwd)/grafana/provisioning/:/etc/grafana/provisioning/ -v grafana-data:/var/lib/grafana --expose 3000 --network cc_p1_network grafana/grafana-oss
+    docker run -it -d --name docker-compose-grafana-2 -v $(pwd)/grafana/provisioning/:/etc/grafana/provisioning/ -v grafana-data:/var/lib/grafana --expose 3000 --network cc_p1_network grafana/grafana-oss
     docker run -it -d --name node-haproxy -v $(pwd)/haproxy:/haproxy-override -v $(pwd)/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro -p 8080:80 --network cc_p1_network haproxy:1.6
 fi
