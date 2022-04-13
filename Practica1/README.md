@@ -36,6 +36,10 @@ Además, los servicios de Prometheus y Node Exporter se ejecutan con una serie d
     - **--storage.tsdb.retention.time=7d"** es la opción pedida para la práctica, con la que se indica cuánto tiempo mantener las métricas en almacenamiento, a partir de lo cual se eliminarán. Se ha configurado para una semana (7 días).
 - **Node Exporter**: Se indican los argumentos **--path.procfs=/host/proc --path.rootfs=/rootfs --path.sysfs=/host/sys** que son los que vienen por defecto para indicar dónde se encuentran las configuraciones de node exporter.
 
+Una vez ejecutados los contenedores de cualquiera de las dos formas, podemos acceder a la dirección http://localhost:8080 para acceder a Grafana. Nos recibirá una pantalla de login, en la que debemos escribir de usuario y contraseña "admin", y así llegaremos a la página principal. Para acceder al dashboard, que está ya instalado automáticamente y con la fuente de datos también incluida automáticamente, basta con acceder al menú lateral de Dashboards y luego a Browse, donde encontraremos el dashboard que se ha instalado, y al hacerle click ya podemos ver las métricas tal y como se muestra en la siguiente imagen:
+
+![](./img/grafana.png)
+
 A continuación se muestran las dos formas que se han desarrollado para desplegar el ecosistema explicado.
 
 ### Desplegar servicios con docker sin compose
