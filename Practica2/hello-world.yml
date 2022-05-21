@@ -3,8 +3,8 @@ provider:
   name: openfaas
   gateway: http://127.0.0.1:8080
 functions:
-  go-fn:
+  hello-world:
     lang: go
-    handler: ./go-fn
-    image: go-fn:latest
+    handler: ./hello-world
+    image: jlgallego99/hello-world:latest
 
