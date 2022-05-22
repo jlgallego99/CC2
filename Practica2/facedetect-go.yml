@@ -3,7 +3,8 @@ provider:
   name: openfaas
   gateway: http://127.0.0.1:8080
 functions:
-  practica2cc:
-    lang: python3-debian
-    handler: ./function
+  facedetect-go:
+    lang: go
+    handler: ./facedetect-go
     image: jlgallego99/practica2cc:latest
+
