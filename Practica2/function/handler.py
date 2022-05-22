@@ -1,7 +1,6 @@
-def handle(req):
-    """handle a request to the function
-    Args:
-        req (str): request body
-    """
+import cv2
 
-    return req
+def handle(url):
+    img = cv2.imread(url)
+
+    return url
