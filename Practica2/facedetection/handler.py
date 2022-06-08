@@ -1,6 +1,7 @@
 import cv2
 import requests
 import numpy as np
+import base64
 
 xmlFile = "haarcascade_frontalface_default.xml"
 
@@ -24,10 +25,13 @@ def handle(req):
     )
 
     #print("Found {0} faces!".format(len(faces)))
-    return str(len(faces))
+    #return str(len(faces))
 
     # Draw a rectangle around the faces
-    #for (x, y, w, h) in faces:
-    #    cv2.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), 2)
+    for (x, y, w, h) in faces:
+        cv2.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
-    #cv2.imshow("Faces found", img)
+    jpg_img = cv2.imencode('.jpg', img)
+    b64_string = base64.b64encode(jpg_img[1]).decode('utf-8')
+
+    return("<img src=\"data:image/png;base64, " + b64_string + "\">")
